@@ -1,22 +1,30 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.request.AuthenticationRequest;
+import com.example.demo.dto.request.IntrospectRequest;
 import com.example.demo.dto.request.response.AuthenticationResponse;
+import com.example.demo.dto.request.response.IntrospectResponse;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.nimbusds.jose.Payload;
+
+import java.text.ParseException;
 import java.time.Instant;
 import java.util.Date;
 import java.time.temporal.ChronoUnit;
@@ -28,11 +36,26 @@ import java.time.temporal.ChronoUnit;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
     @NonFinal
- protected static final String SIGNER_KEY = "53616c7465645f5f626563617573656974697361736563726574";
+    @Value("${jwt.signerKey}")
+    protected String SIGNER_KEY;
+
+
+    public IntrospectResponse introspect(IntrospectRequest request)
+            throws JOSEException, ParseException {
+        var token=request.getToken();
+        JWSVerifier verifier= new MACVerifier(SIGNER_KEY.getBytes());
+        SignedJWT signedJWT=SignedJWT.parse(token);
+        Date expitytime=signedJWT.getJWTClaimsSet().getExpirationTime();
+       var verified=signedJWT.verify(verifier);
+       return IntrospectResponse.builder()
+               .valid( verified &&  expitytime.after(new Date()))
+               .build();
+
+    }
     UserRepository userRepository;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var user = userRepository.findById(request.getUsername())
+        var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
