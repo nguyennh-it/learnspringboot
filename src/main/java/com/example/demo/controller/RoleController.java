@@ -1,4 +1,4 @@
-package com.devteria.identityservice.controller;
+package com.example.demo.controller;
 
 import java.util.List;
 
