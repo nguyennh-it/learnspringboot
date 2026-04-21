@@ -10,10 +10,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 // Sửa lại import cho khớp với package example.demo
-import com.example.demo.dto.response.ApiResponse;
+import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(

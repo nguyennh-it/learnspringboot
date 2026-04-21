@@ -1,6 +1,5 @@
 package com.example.demo.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,12 +11,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class    UserCreationRequest {
+public class UserCreationRequest {
     @Size(min = 3,message = "USERNAME_INVALID")
-      String username;
+    String username;
     @Size(min = 8,message = "INVALID_PASSWORD")
-   String password;
-     String firstname;
-      String lastname;
-   LocalDate dob;
-    }
+    String password;
+    String firstName;
+    String lastName;
+    LocalDate dob;
+}

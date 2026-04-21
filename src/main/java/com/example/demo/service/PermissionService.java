@@ -1,14 +1,14 @@
-package com.devteria.identityservice.service;
+package com.example.demo.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.devteria.identityservice.dto.request.PermissionRequest;
-import com.devteria.identityservice.dto.response.PermissionResponse;
-import com.devteria.identityservice.entity.Permission;
-import com.devteria.identityservice.mapper.PermissionMapper;
-import com.devteria.identityservice.repository.PermissionRepository;
+import com.example.demo.dto.request.PermissionRequest;
+import com.example.demo.dto.response.PermissionResponse;
+import com.example.demo.entity.Permission;
+import com.example.demo.mapper.PermissionMapper;
+import com.example.demo.repository.PermissionRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.devteria.identityservice.dto.request.ApiResponse;
-import com.devteria.identityservice.dto.request.RoleRequest;
-import com.devteria.identityservice.dto.response.RoleResponse;
-import com.devteria.identityservice.service.RoleService;
+import com.example.demo.dto.request.ApiResponse;
+import com.example.demo.dto.request.RoleRequest;
+import com.example.demo.dto.response.RoleResponse;
+import com.example.demo.service.RoleService;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

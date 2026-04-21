@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
 import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
-// Sửa lại đường dẫn ApiResponse cho đúng với cấu trúc thư mục của bạn
-import com.example.demo.dto.request.response.ApiResponse;
+import com.example.demo.dto.request.ApiResponse;
 import com.example.demo.dto.request.PermissionRequest;
 import com.example.demo.dto.response.PermissionResponse;
 import com.example.demo.service.PermissionService;

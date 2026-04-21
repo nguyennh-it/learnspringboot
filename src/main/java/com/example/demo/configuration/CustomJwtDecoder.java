@@ -1,4 +1,4 @@
-package com.devteria.identityservice.configuration;
+package com.example.demo.configuration;
 
 import java.text.ParseException;
 import java.util.Objects;
@@ -13,8 +13,8 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 
-import com.devteria.identityservice.dto.request.IntrospectRequest;
-import com.devteria.identityservice.service.AuthenticationService;
+import com.example.demo.dto.request.IntrospectRequest;
+import com.example.demo.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 
 @Component

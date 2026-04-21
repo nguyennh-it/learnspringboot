@@ -54,9 +54,9 @@ public class UserControllerIntegrationTest {
     void initData() {
         dob = LocalDate.of(1990, 1, 1);
         request = UserCreationRequest.builder()
-                .username("john_integration") // Tên khác để phân biệt
-                .firstname("John")
-                .lastname("Doe")
+                .username("john_integration")
+                .firstName("John")
+                .lastName("Doe")
                 .password("12345678")
                 .dob(dob)
                 .build();

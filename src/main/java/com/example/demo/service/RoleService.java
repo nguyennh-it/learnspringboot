@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.devteria.identityservice.dto.request.RoleRequest;
-import com.devteria.identityservice.dto.response.RoleResponse;
-import com.devteria.identityservice.mapper.RoleMapper;
-import com.devteria.identityservice.repository.PermissionRepository;
-import com.devteria.identityservice.repository.RoleRepository;
+import com.example.demo.dto.request.RoleRequest;
+import com.example.demo.dto.response.RoleResponse;
+import com.example.demo.entity.Permission;
+import com.example.demo.mapper.RoleMapper;
+import com.example.demo.repository.PermissionRepository;
+import com.example.demo.repository.RoleRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class RoleService {
         var role = roleMapper.toRole(request);
 
         var permissions = permissionRepository.findAllById(request.getPermissions());
-        role.setPermissions(new HashSet<>(permissions));
+        role.setPermissions(new HashSet<Permission>(permissions));
 
         role = roleRepository.save(role);
         return roleMapper.toRoleResponse(role);
