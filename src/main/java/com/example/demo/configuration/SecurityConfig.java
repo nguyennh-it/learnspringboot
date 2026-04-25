@@ -1,6 +1,5 @@
 package com.example.demo.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,56 +20,71 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
-    };
+  private static final String[] PUBLIC_ENDPOINTS = {
+    "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
+  };
 
-    @Autowired
-    private CustomJwtDecoder customJwtDecoder;
+  private final CustomJwtDecoder customJwtDecoder;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+  public SecurityConfig(CustomJwtDecoder customJwtDecoder) {
+    this.customJwtDecoder = customJwtDecoder;
+  }
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    httpSecurity.authorizeHttpRequests(
+        request ->
+            request
+                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                 .permitAll()
                 .anyRequest()
                 .authenticated());
 
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                        .decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+    httpSecurity.oauth2ResourceServer(
+        oauth2 ->
+            oauth2
+                .jwt(
+                    jwtConfigurer ->
+                        jwtConfigurer
+                            .decoder(customJwtDecoder)
+                            .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+    httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
-        return httpSecurity.build();
-    }
+    return httpSecurity.build();
+  }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
+  @Bean // Đăng ký cấu hình CORS vào Spring Để nó tự động hoạt động toàn hệ thống
+  public CorsFilter
+      corsFilter() { // Tạo một bộ lọc (filter) để chặn và xử lý request trước khi vào Controller
+    CorsConfiguration corsConfiguration =
+        new CorsConfiguration(); // Tạo nơi chứa luật CORS  (“Cho phép ai, làm gì, gửi gì”
+    corsConfiguration.addAllowedOrigin("*"); // Cho phép mọi frontend (mọi domain) gọi API
+    corsConfiguration.addAllowedMethod(
+        "*"); // Cho phép tất cả HTTP method (GET, POST, PUT, DELETE...)
+    corsConfiguration.addAllowedHeader(
+        "*"); // Cho phép frontend gửi header (đặc biệt là Authorization)
+    UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =
+        new UrlBasedCorsConfigurationSource(); // Tạo nơi để gắn rule CORS với URL
+    urlBasedCorsConfigurationSource.registerCorsConfiguration(
+        "/**", corsConfiguration); // Áp dụng rule CORS cho toàn bộ API
+    return new CorsFilter(urlBasedCorsConfigurationSource); // intercept request,
+  }
 
-        corsConfiguration.addAllowedOrigin("*");
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedHeader("*");
+  @Bean //
+  JwtAuthenticationConverter jwtAuthenticationConverter() {
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
+        new JwtGrantedAuthoritiesConverter();
+    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+    JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
-        return new CorsFilter(urlBasedCorsConfigurationSource);
-    }
+    return jwtAuthenticationConverter;
+  }
 
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-
-        return jwtAuthenticationConverter;
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
+  @Bean
+  PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(10);
+  }
 }

@@ -8,7 +8,7 @@ import com.example.demo.entity.Permission;
 
 @Mapper(componentModel = "spring")
 public interface PermissionMapper {
-    Permission toPermission(PermissionRequest request);
+  Permission toPermission(PermissionRequest request);
 
-    PermissionResponse toPermissionResponse(Permission permission);
+  PermissionResponse toPermissionResponse(Permission permission);
 }
